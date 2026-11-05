@@ -15,9 +15,7 @@ type
 
     TarchivoEstudiante = file of TEstudiante;
 
-procedure CrearArchivoEstudiantes(var a: TarchivoEstudiante);
 procedure AbrirArchivoEstudiantes(var a: TarchivoEstudiante);
-procedure CerrarArchivoEstudiantes(var a: TarchivoEstudiante);
 procedure LeerRegistroEstudiante(var a: TarchivoEstudiante; pos:integer; var r: TEstudiante);
 procedure GuardarRegistroEstudiante(var a:TarchivoEstudiante; pos:integer; var r:TEstudiante);
 procedure BurbujaLegajo(var a:TarchivoEstudiante);
@@ -29,24 +27,15 @@ implementation
 uses 
     Crt, SysUtils;
 
-procedure CrearArchivoEstudiantes(var a: TarchivoEstudiante);
-begin 
-    if FileExist('Estudiantes.dat') then
-        writeln('El archivo ya existe')
-    else 
-        Assign(a, 'Estudiantes.dat');
-        rewrite(a);
-end;
-
 procedure AbrirArchivoEstudiantes(var a: TarchivoEstudiante);
 begin
     Assign(a, 'Estudiantes.dat');
+    {$I-}   {Desactiva la comprobación automática}
     Reset(a)
-end;
+    {$I+}   {Activa la comprobación de la linea 34}
 
-procedure CerrarArchivoEstudiantes(var a: TarchivoEstudiante);
-begin
-    Close(a);
+    if IOResult <> 0 then {Si no hay un problema en la comprobación en la línea 35, crea el archivo.}
+        Rewrite(a);
 end;
 
 procedure LeerRegistroEstudiante(var a: TarchivoEstudiante; pos:integer; var r: TEstudiante);
@@ -55,19 +44,49 @@ begin
     Read(a, r);
 end;
 
-procedure GuardarRegistroEstudiante(var a:TarchivoEstudiante; pos:integer; var r:TEstudiante);
+function VerificarRepetido(var a: TarchivoEstudiante; legajo : string):boolean;
+var 
+    r : TEstudiante;
+    encontrado: boolean;
 begin
-    if(FileSize(a) = 0)then
+
+    encontrado := False;
+    seek(a, 0);
+    while (not Eof(a)) and (not encontrado) do
     begin
-        pos := 0;
-        Seek(a, pos);     // belezaAAAAAA
-        Write(a, r);
+        read(a,r);
+        encontrado := (r.legajo = legajo); {Si el legajo del registro leído y el legajo pasado por el parametro son iguales encontrado = True}
+    end;
+
+    VerificarRepetido := encontrado;
+
+end;
+
+procedure GuardarRegistroEstudiante(var a:TarchivoEstudiante; pos:integer; var r:TEstudiante);
+var
+    repetido : boolean;
+
+begin
+    repetido := VerificarRepetido(r);
+    if not repetido then
+    begin
+        if(FileSize(a) = 0)then
+        begin
+            pos := 0;
+            Seek(a, pos);
+            Write(a, r);
+        end
+        else
+        begin
+            pos := FileSize(a);
+            Seek(a, pos);
+            Write(a, r);
+        end;
+        writeln('Estudiante cargado.');
     end
     else
     begin
-        pos := FileSize(a);
-        Seek(a, pos);
-        Write(a, r);
+        Writeln('Ese Legajo ya existe.');
     end;
 end;
 
@@ -114,12 +133,10 @@ begin
     end;
 end;
 
-// NUEVOOOOOOOOOOOOOOOO
-procedure BusquedaBinariaEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer; buscado:string[10]);
+procedure BusquedaBinariaEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer; buscado:string);
 var 
     pri, ult, med: integer;
     aux: TEstudiante;
-    buscado: String;
 begin
     pri := 0;
     ult := filesize(a) - 1;
@@ -128,7 +145,7 @@ begin
     begin
         med := (pri + ult) div 2;
         
-        seek(a,med); //POSICIONO EL PUNTERO AL MEDIO 
+        seek(a,med);
         read(a,r);
         
         if (r.Legajo = buscado) then
@@ -140,26 +157,20 @@ begin
             pri := med + 1;
     end;
 end;
+
 procedure MostrarDatosEstudiante(var r: TEstudiante);
 begin 
-    writeln('Nombre y apellido: ',r.NombreApellido);
-    writeln('DNI: ',r.DNI);
-    writeln('Legajo: ',r.Legajo);
-    writeln('Carrera: ',r.Carrera);
-    writeln('Año de Ingreso: ',r.AnioIngreso);
-    writeln('Promedio en la Carrera: ',r.Promedio);
-    writeln('Porcentaje de la Carrera: ',r.PorcentajeCarrera);
+    writeln('Nombre y apellido: ',r.NombreApellido, '|', 'DNI: ',r.DNI, '|', 'Legajo: ', r.Legajo, '|',
+            'Carrera: ', r.carrera, '|', 'Año de ingreso: ', r.AnioIngreso, '|', 'Promedio: ',r.Promedio:0:2, '|', 'Pocentaje de avance: ',r.PorcentajeCarrera:0:1, '%');
 end;
 
-procedure AgregarEstudiantes(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer);
+procedure AgregarEstudiantes(var a: TarchivoEstudiante;var r: TEstudiante; pos: integer);
 begin 
     CargarEstudiante(a,r);
-    GuardarRegistro(a,pos,r);
+    GuardarRegistroEstudiante(a,pos,r);
 end;
 
 procedure BuscarEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer; buscado:string[10]);
-var 
-    SioNo: char;
 begin 
     BurbujaLegajo(a);
     BusquedaBinariaEstudiante(a,r,pos,legajoabuscar);

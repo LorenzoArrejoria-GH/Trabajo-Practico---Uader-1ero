@@ -2,6 +2,7 @@ Unit Unit_Habilidades;
 {$CODEPAGE UTF8}
 
 interface 
+
 type 
     THabilidad = record 
         CodigoHabilidad: String[10];
@@ -11,9 +12,7 @@ type
 
     TarchivoTHabilidades = file of THabilidad;
 
-procedure CrearArchivoHabilidades(var a: TarchivoTHabilidades);
 procedure AbrirArchivoHabilidades(var a: TarchivoTHabilidades);
-procedure CerrarArchivoHabilidades(var a: TarchivoTHabilidades);
 procedure LeerRegistroArchivoHabilidades(var a: TarchivoTHabilidades; pos:integer; var r: THabilidad);
 procedure GuardarRegistroHabilidades(var a:TarchivoTHabilidades; pos:integer; var r:THabilidad);
 procedure LeerRegistroHabilidades(var a: TarchivoTHabilidades; var r: THabilidad);
@@ -26,24 +25,17 @@ procedure BuscarHabilidad(var a: TarchivoTHabilidades;var r: THabilidad; var pos
 
 implementation
 
-uses
-  Crt;
-
-procedure CrearArchivoHabilidades(var a: TarchivoTHabilidades);
-begin 
-    Assign(a, 'Habilidades.dat');
-    rewrite(a);
-end;
-
 procedure AbrirArchivoHabilidades(var a: TarchivoTHabilidades);
 begin
-    Assign(a, 'Habilidades.dat');
-    Reset(a)
-end;
 
-procedure CerrarArchivoHabilidades(var a: TarchivoTHabilidades);
-begin
-    Close(a);
+    Assign(a, 'Habilidades.dat');
+    {$I-} {Desactiva la comprobación automática}
+    Reset(a)
+    {$I+}  {Activa la comprobación de la linea 34}
+
+    if IOResult <> 0 then {Si no hay un problema en la comprobación en la línea 35, crea el archivo.}
+        Rewrite(a);
+
 end;
 
 procedure LeerRegistroArchivoHabilidades(var a: TarchivoTHabilidades; pos:integer; var r: THabilidad);
@@ -52,21 +44,22 @@ begin
     Read(a, r);
 end;
 
-function VerificarRepetido(var r: THabilidad):boolean;
+function VerificarRepetido(var a: TarchivoTHabilidades; codHabilidad : string):boolean;
 var 
-    repetido: string[10];
+    r : THabilidad;
+    encontrado: boolean;
 begin
-    Write('Ingrese el codigo de la habilidad: ');
-    readln(repetido);
-    if(repetido = r.CodigoHabilidad)then
+
+    encontrado := False;
+    seek(a, 0);
+    while (not Eof(a)) and (not encontrado) do
     begin
-        writeln('El codigo de habilidad ya existe, no se puede guardar el registro');
-        VerificarRepetido := true;
-    end
-    else
-    begin
-        VerificarRepetido := false;
+        read(a,r);
+        encontrado := (r.codHabilidad = codHabilidad); {Si el Cod. Habilidad del registro leído y el Cod. Habilidad pasado por el parametro son iguales encontrado = True}
     end;
+
+    VerificarRepetido := encontrado;
+
 end;
 
 procedure GuardarRegistroHabilidades(var a:TarchivoTHabilidades; pos:integer; var r:THabilidad);
@@ -88,6 +81,11 @@ begin
             Seek(a, pos);
             Write(a, r);
         end;
+        writeln('Habilidad Guardada.');
+    end
+    else
+    begin
+        Writeln('Ese Codigo Habilidad ya existe.');
     end;
 end;
 
@@ -144,29 +142,15 @@ begin
     end;
 end;
 
-procedure BusquedaBinariaHabilidad(var a: TarchivoTHabilidades;var r: THabilidad; var pos: integer);
+function BusquedaBinariaHabilidad(var a: TarchivoTHabilidades;var r: THabilidad; buscado: string;): integer;
 var
-    pri, ult, med: integer;
+    pri, ult, med, pos: integer;
     aux: THabilidad;
-    buscado: string;
-
 begin
+
     pri := 0;
     ult := FileSize(a) - 1;
     pos := -1;
-
-    repeat
-    begin
-        write('Ingrese el codigo de la habilidad a buscar: ');
-        readln(buscado);
-
-        if lenght(buscado) < 10 then
-        begin
-            writeln('El codigo de la habilidad debe tener 10 caracteres.');
-            readln;
-        end;
-    end;
-    until lenght(buscado) = 10;
 
     while (pos = -1) and (pri <= ult) do
     begin
@@ -180,26 +164,21 @@ begin
         else
             ult := med - 1;
     end;
+
+    BusquedaBinariaHabilidad := pos;
+
 end;
 
 procedure AgregarHabilidades(var a: TarchivoTHabilidades;var r: THabilidad; var pos: integer);
 begin 
-    CargarHabilidad(a,pos,r);
+    LeerRegistroHabilidad(a,pos,r);
     GuardarRegistroHabilidades(a,pos,r);
 end;
 
 procedure BuscarHabilidad(var a: TarchivoTHabilidades;var r: THabilidad; var pos: integer);
-var 
-    SioNo: char;
-begin 
-    repeat
-    begin 
-        BurbujaCodigoHabilidad(a);
-        BusquedaBinariaHabilidad(a,r,pos);
-        write('Desea Buscar a otro/otra Habilidades? s/n: ');
-        readln(SioNo);    
-    end;
-    until(SioNo = 'n')
+begin
+    BurbujaCodigoHabilidad(a);
+    BusquedaBinariaHabilidad(a,r,pos);
 end;
 
 end.

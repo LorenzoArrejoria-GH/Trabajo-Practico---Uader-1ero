@@ -45,7 +45,7 @@ end;
 procedure menuPrincipal();
 begin
     Writeln();
-    Writeln('-----------MENÚ PRINCIPAL------------');
+    Writeln('----------- MENÚ PRINCIPAL ------------');
     Writeln('1. Agregar un nuevo estudiante y sus habilidades.');
     Writeln('2. Modificar un estudiante existente y sus habilidades.');
     writeln('Ingrese una opcion: ');
@@ -54,19 +54,10 @@ end;
 procedure menuHabilidad();
 begin
     Writeln();
-    Writeln('-----------MENÚ PRINCIPAL------------');
+    Writeln('----------- MODIFICACION ------------');
     Writeln('1. Modificar estudiante.');
     Writeln('2. Modificar Habilidades.');
-    writeln('Ingrese una opcion: ');
-end;
-
-procedure menuModificar();
-begin
-    Writeln();
-    Writeln('-----------MENÚ PRINCIPAL------------');
-    Writeln('1. Agregar una nueva habilidad al estudiante.');
-    Writeln('2. Modificar una habilidad del estudiante.');
-    Writeln('3. Eliminar una habilidad del estudiante');
+    Writeln('3. Modificar Competencias.');
     writeln('Ingrese una opcion: ');
 end;
 
