@@ -2,6 +2,9 @@ Unit Unit_Competencias;
 {$CODEPAGE UTF8}
 
 interface 
+
+uses Unit_Estudiantes,Unit_Habilidades; 
+
 type 
     TCompetencia = record 
         Legajo: String[10];
@@ -11,38 +14,31 @@ type
 
     TarchivoCompetencias = file of TCompetencia;
 
-procedure CrearArchivoCompetencias(var a: TArchivoCompetencias);
 procedure AbrirArchivoCompetencias(var a: TArchivoCompetencias);
-procedure CerrarArchivoCompetencias(var a: TarchivoCompetencias);
 procedure LeerRegistroCompetencias(var a: TArchivoCompetencias; pos:integer; var r: TCompetencia);
-procedure CargarCompetencia(var a:TArchivoCompetencias; var r: TCompetencia; legajo, codHabilidad : string);
+function ExisteCompetencia(var a:TArchivoCompetencias;legajo,codHabilidad:string): boolean;
+procedure AgregarCompetencia(var a:TArchivoCompetencias; var r: TCompetencia; legajo, codHabilidad : string);
+procedure ListarCompetencia(var a:TArchivoCompetencias;);
+procedure OrdenadoBurbujaCompetencia(var a:TArchivoCompetencias;);
 {procedure AgregarCompetencia(var a: TarchivoCompetencias; var r: TCompetencia; legajo, codHabilidad : string);}
 
 implementation
 
-uses
-  Crt, SysUtils;
-
-procedure CrearArchivoCompetencias(var a: TArchivoCompetencias);
-begin 
-    if FileExists('Competencias.dat') then
-        writeln('El archivo ya existe')
-    else 
-        Assign(a, 'Competencias.dat');
-        rewrite(a);
-end;
 
 procedure AbrirArchivoCompetencias(var a: TArchivoCompetencias);
 begin 
         Assign(a, 'competencias.dat');
+        {$I-}
         reset(a);
+        {$I+}
+        if IOResult <> 0 then
+        rewrite(a);
 
 end;
-procedure CerrarArchivoCompetencias(var a: TArchivoCompetencias);
-begin
-        close(a);
-end;
+
 procedure LeerRegistroCompetencias(var a: TArchivoCompetencias; pos:integer; var r: TCompetencia);
+     Seek(a, pos);
+    Read(a, r);
 
 begin
 
