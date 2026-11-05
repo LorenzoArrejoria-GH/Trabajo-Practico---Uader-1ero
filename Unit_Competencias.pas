@@ -27,21 +27,35 @@ implementation
 
 procedure AbrirArchivoCompetencias(var a: TArchivoCompetencias);
 begin 
-        Assign(a, 'competencias.dat');
-        {$I-}
-        reset(a);
-        {$I+}
-        if IOResult <> 0 then
-        rewrite(a);
-
+    Assign(a, 'competencias.dat');
+    {$I-}
+    reset(a);
+    {$I+}
+    if IOResult <> 0 then
+    rewrite(a);
 end;
 
+function ExisteCompetencia(var TArchivoCompetencias,legajo,codHabilidad: string): boolean;
+    var
+    reg:TCompetencia;
+    encontrado:boolean;
+    begin
+        encontrado:=False;
+        seek(a ,0);
+        while (not Eof (a)) and (not encontrado)
+        begin
+            read(a,reg);
+            encontrado:= (reg.legajo = legajo) and (reg.codHabilidad = codHabilidad);
+        end;
+    ExisteCompetencia:= encontrado;
+    end;
+//buscar binario por legajo y ordenar burbuja por dominio
+
+
 procedure LeerRegistroCompetencias(var a: TArchivoCompetencias; pos:integer; var r: TCompetencia);
-     Seek(a, pos);
-    Read(a, r);
-
 begin
-
+    Seek(a, pos);
+    Read(a, r);
 end;
 
 procedure CargarCompetencia(var a:TArchivoCompetencias; var r: TCompetencia; legajo, codHabilidad : string);
