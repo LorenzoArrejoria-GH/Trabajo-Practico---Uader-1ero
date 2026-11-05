@@ -4,8 +4,8 @@ program TP_Final;
 uses
     Unit_Competencias, Unit_Estudiantes, Unit_Habilidades, crt;
 var 
-    opcionGeneral, opcionHabilidad, opcionModificar : byte;
-    opcionAgregar : char;
+    opcionGeneral : byte;
+    opcionAgregar, confirmarEliminado : char;
     legajoabuscar, codigohabilidad : string[10];
 
     archivoEstudiantes: TarchivoEstudiante;
@@ -20,95 +20,101 @@ var
     posicionHabilidad: integer; 
     posicionCompetencia: integer; 
 
-//PROCEDURES :v
-procedure CrearArchivos(var a1: TarchivoEstudiante; var a2: TarchivoTHabilidades; var a3: TarchivoCompetencias);
-begin 
-    CrearArchivoEstudiantes(a1);
-    CrearArchivoHabilidades(a2);
-    CrearArchivoCompetencias(a3);
-end;
-
-procedure AbrirArchivos(var a1:TarchivoEstudiante; var a2: TarchivoTHabilidades; var a3: TarchivoCompetencias);
-begin
-    AbrirArchivoEstudiantes(a1);
-    AbrirArchivoHabilidades(a2);
-    AbrirArchivoCompetencias(a3);
-end;
-
-procedure CerrarArchivos(var a1:TarchivoEstudiante; var a2: TarchivoTHabilidades; var a3: TarchivoCompetencias);
-begin
-    CerrarArchivoEstudiantes(a1);
-    CerrarArchivoHabilidades(a2);
-    CerrarArchivoCompetencias(a3);
-end;
-
 procedure menuPrincipal();
 begin
     Writeln();
     Writeln('----------- MENÚ PRINCIPAL ------------');
     Writeln('1. Agregar un nuevo estudiante y sus habilidades.');
-    Writeln('2. Modificar un estudiante existente y sus habilidades.');
-    writeln('Ingrese una opcion: ');
-end;
-
-procedure menuHabilidad();
-begin
-    Writeln();
-    Writeln('----------- MODIFICACION ------------');
-    Writeln('1. Modificar estudiante.');
-    Writeln('2. Modificar Habilidades.');
-    Writeln('3. Modificar Competencias.');
+    Writeln('2. Modificar un estudiante.');
+    Writeln('3. Modificar una habilidad.');
+    Writeln('4. Modificar una competencia.');
+    Writeln('5. Eliminar un estudiante.');
+    Writeln('6. Eliminar una habilidad.');
+    Writeln('7. Eliminar una competencia.');
+    Writeln('0. Salir.');
     writeln('Ingrese una opcion: ');
 end;
 
 begin 
-// PROGRAMA PRINCIPAL  :)    
-    CrearArchivos(archivoEstudiantes, archivoHabilidades, archivoCompetencias);
-    AbrirArchivos(archivoEstudiantes, archivoHabilidades, archivoCompetencias);
+    
     menuPrincipal();
     readln(opcionGeneral);
 
-    case opcionGeneral of
+    while (opcionGeneral <> 0)
     begin
-        1: 
+        case opcionGeneral of
         begin
-        //EN UN ESTUDIANTE CARGAR MÁS DE 1 HABILIDAD PARA TOMAR EL DNI Y EL LEGAJO DEL ESTUDIANTE Y FUSIONAR NUESTRA UNIT COMPETENCIAS CON LAS DE HABILIDADES Y ESTUDIANTES
-            AgregarEstudiantes(archivoEstudiantes, registroEstudiantes, posicionEstudiante);
-            writeln('Desea agregar una habilidad? (S/N): ');
-            read(opcionAgregar);
-            while(opcionAgregar = 'S') do
+            1: 
             begin
-                AgregarHabilidad(archivoHabilidades, registroHabilidad, posicionHabilidades);
-                AgregarCompetencia(archivoCompetencias, registroCompetencia, registroEstudiantes.Legajo, registroHabilidad.CodigoHabilidad);
-                writeln('Desea agregar alguna otra habilidad? (S/N): ');
+                AgregarEstudiantes(archivoEstudiantes, registroEstudiantes, posicionEstudiante);
+                writeln('Desea agregar una habilidad? (S/N): ');
                 read(opcionAgregar);
+                UpCase(opcionAgregar);
+                while(opcionAgregar = 'S') do
+                begin
+                    AgregarHabilidad(archivoHabilidades, registroHabilidad, posicionHabilidad);
+                    AgregarCompetencia(archivoCompetencias, registroCompetencia, registroEstudiantes.Legajo, registroHabilidad.CodigoHabilidad);
+                    writeln('Desea agregar alguna otra habilidad? (S/N): ');
+                    read(opcionAgregar);
+                end;
             end;
-        end;
-        2:
-        begin
-            menuModificar();   
-            read(opcionModificar);
-            case opcionModificar of
+            2:
             begin
-                1:
-                    Writeln('Ingrese el legajo del estudiante.');
-                    read(legajoabuscar);
-                    BuscarEstudiante(archivoEstudiantes, registroEstudiante, posicionEstudiante, legajoabuscar);
-                    CargarEstudiante(archivoEstudiantes, registroEstudiante);
-                    GuardarRegistroEstudiante(archivoEstudiantes, posicionEstudiante, registroEstudiante)
-                2:
-                    Writeln('Ingrese el legajo del estudiante.');
-                    read(legajoabuscar);
-                else:
+                Writeln('Ingrese el legajo del estudiante: ');
+                read(legajoabuscar);
+                BuscarEstudiante(archivoEstudiantes, registroEstudiante, posicionEstudiante, legajoabuscar);
+                CargarEstudiante(archivoEstudiantes, registroEstudiante);
+                GuardarRegistroEstudiante(archivoEstudiantes, posicionEstudiante, registroEstudiante)
+            end;
+            3:
+            begin
+                Writeln('Ingrese el codigo de la habilidad: ');
+                read(codigohabilidad)
+                BuscarHabilidad(archivoHabilidades, registroHabilidad, posicionHabilidad);
+                AgregarHabilidad(archivoHabilidades, registroHabilidad, posicionHabilidad);
+            end;
+            4:
+            begin
+                Writeln('Ingrese el legajo del estudiante: ');
+                read(legajoabuscar);
+                Writeln('Ingrese el codigo de la habilidad: ');
+                read(codigohabilidad)
                 
+            end;
+            5:
+            begin
+                Writeln('Ingrese el legajo del estudiante a eliminar: ');
+                read(legajoabuscar);
+
+                Writeln('[AVISO]¿Está seguro que quiere eliminar al estudiante? (S/N): ');
+                read(confirmarEliminado);
+                UpCase(confirmarEliminado);
+                if(confirmarEliminado = 'S') then
+                begin
+                    BuscarEstudiante(archivoEstudiantes, registroEstudiante, posicionEstudiante, legajoabuscar);
+                    eliminarEstudiante(archivoEstudiantes, posicionEstudiante);
+                    Writeln('Estudiante eliminado correctamente.');
+                end;
+            end;
+            6:
+            begin
+                Writeln('Ingrese el codigo de habilidad a eliminar: ');
+                read(codigoHabilidad);
+
+                Writeln('[AVISO]¿Está seguro que quiere eliminar al estudiante? (S/N): ');
+                read(confirmarEliminado);
+                UpCase(confirmarEliminado);
+                if(confirmarEliminado = 'S') then
+                begin
+                    buscar
+                    eliminarHabilidad(archivoHabilidades);
+                end;
             end;
         end;
 
+        menuPrincipal();
+        readln(opcionGeneral);
+
     end;
-    AgregarEstudiantes(archivoEstudiantes,posicion,registroEstudiante);
-    BuscarEstudiante(archivoEstudiantes,registroEstudiante,posicion);
-    
-    
-    BuscarHabilidad(archivoHabilidades,registroHabilidad,posicion);
 
 end.

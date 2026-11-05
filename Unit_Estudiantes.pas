@@ -11,6 +11,7 @@ type
         AnioIngreso: word;
         Promedio: real;
         PorcentajeCarrera: real;
+        estado : Boolean;
         end;
 
     TarchivoEstudiante = file of TEstudiante;
@@ -23,9 +24,6 @@ procedure BusquedaBinariaEstudiante(var a: TarchivoEstudiante;var r: TEstudiante
 procedure MostrarDatosEstudiante(var r: TEstudiante);
 
 implementation
-
-uses 
-    Crt, SysUtils;
 
 procedure AbrirArchivoEstudiantes(var a: TarchivoEstudiante);
 begin
@@ -92,21 +90,24 @@ end;
 
 procedure CargarEstudiante(var a:TarchivoEstudiante; var r:TEstudiante);
 begin 
-    write('Ingrese el nombre y apellido del/la estudiante: ');
+    writeln('Ingrese el nombre y apellido del/la estudiante: ');
     readln(r.NombreApellido);
-    write('Ingrese el DNI del/la estudiante: ');
+    writeln('Ingrese el DNI del/la estudiante: ');
     readln(r.DNI);
-    write('Ingrese el Legajo del/la estudiante: ');
+    writeln('Ingrese el Legajo del/la estudiante: ');
     readln(r.Legajo);
-    write('Ingrese La Carrera del/la estudiante: ');
+    writeln('Ingrese La Carrera del/la estudiante: ');
     readln(r.Carrera);
-    write('Ingrese el Año de Ingreso del/la estudiante: ');
+    writeln('Ingrese el Año de Ingreso del/la estudiante: ');
     readln(r.AnioIngreso);
-    write('Ingrese el Promedio de la carrera del/la estudiante: ');
+    writeln('Ingrese el Promedio de la carrera del/la estudiante: ');
     readln(r.Promedio);
-    write('Ingrese el Porcentaje de la carrera del/la estudiante: ');
+    writeln('Ingrese el Porcentaje de la carrera del/la estudiante: ');
     readln(r.PorcentajeCarrera);
+    estado := True;
 end;
+
+procedure bajaEstudiante(var a:TarchivoEstudiante; )
 
 procedure BurbujaLegajo(var a:TarchivoEstudiante);
 var
@@ -170,7 +171,7 @@ begin
     GuardarRegistroEstudiante(a,pos,r);
 end;
 
-procedure BuscarEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer; buscado:string[10]);
+procedure BuscarEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer; buscado:string);
 begin 
     BurbujaLegajo(a);
     BusquedaBinariaEstudiante(a,r,pos,legajoabuscar);

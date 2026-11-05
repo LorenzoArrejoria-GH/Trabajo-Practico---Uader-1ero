@@ -27,7 +27,6 @@ implementation
 
 procedure AbrirArchivoHabilidades(var a: TarchivoTHabilidades);
 begin
-
     Assign(a, 'Habilidades.dat');
     {$I-} {Desactiva la comprobación automática}
     Reset(a)
@@ -87,6 +86,17 @@ begin
     begin
         Writeln('Ese Codigo Habilidad ya existe.');
     end;
+end;
+
+procedure eliminarHabilidad(var a:TarchivoTHabilidades; posicion : integer);
+var
+    r : THabilidad;
+begin
+    seek(a, pos);
+    r.CodigoHabilidad := '';
+    r.Nombre := '';
+    r.Categoria := '';
+    write(a, r);
 end;
 
 procedure LeerRegistroHabilidades(var a: TarchivoTHabilidades; var r: THabilidad);
