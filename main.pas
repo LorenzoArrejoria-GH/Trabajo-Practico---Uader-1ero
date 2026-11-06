@@ -30,7 +30,6 @@ begin
   Writeln('4. Modificar una competencia.');
   Writeln('5. Eliminar un estudiante.');
   Writeln('6. Eliminar una habilidad.');
-  Writeln('7. Eliminar una competencia.');
   Writeln('0. Salir.');
   writeln('Ingrese una opcion: ');
 end;
@@ -40,7 +39,7 @@ begin
 menuPrincipal();
 readln(opcionGeneral);
 
-  while (opcionGeneral <> 0)
+  while (opcionGeneral <> 0) do
   begin
     case opcionGeneral of
     begin
@@ -91,24 +90,25 @@ readln(opcionGeneral);
           UpCase(confirmarEliminado);
           if(confirmarEliminado = 'S') then
           begin
-              BuscarEstudiante(archivoEstudiantes, registroEstudiante, posicionEstudiante, legajoabuscar);
-              eliminarEstudiante(archivoEstudiantes, posicionEstudiante);
-              Writeln('Estudiante eliminado correctamente.');
+              bajaEstudiante(archivoEstudiantes, registroEstudiante, posicionEstudiante, legajoabuscar);
+              Writeln('Estudiante y competencias eliminado correctamente.');
           end;
       end;
       6:
       begin
-          Writeln('Ingrese el codigo de habilidad a eliminar: ');
-          read(codigoHabilidad);
+        Writeln('Ingrese el codigo de habilidad a eliminar: ');
+        read(codigoHabilidad);
 
-          Writeln('[AVISO]¿Está seguro que quiere eliminar al estudiante? (S/N): ');
-          read(confirmarEliminado);
-          UpCase(confirmarEliminado);
-          if(confirmarEliminado = 'S') then
-          begin
-              BuscarHabilidad(archivoHabilidades, registroHabilidad, posicionHabilidad);
-              eliminarHabilidad(archivoHabilidades, posicionHabilidad);
-          end;
+        Writeln('[AVISO]¿Está seguro que quiere eliminar al estudiante? (S/N): ');
+        read(confirmarEliminado);
+        UpCase(confirmarEliminado);
+        if(confirmarEliminado = 'S') then
+        begin
+            BuscarHabilidad(archivoHabilidades, registroHabilidad, posicionHabilidad);
+            eliminarHabilidad(archivoHabilidades, posicionHabilidad);
+            eliminarCompetenciaCodHabilidad(archivoCompetencias, codigoHabilidad);
+            Writeln('Habilidades y competencias eliminado correctamente.');
+        end;
       end;
     end;
 

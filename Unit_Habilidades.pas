@@ -29,7 +29,7 @@ procedure AbrirArchivoHabilidades(var a: TarchivoTHabilidades);
 begin
     Assign(a, 'Habilidades.dat');
     {$I-} {Desactiva la comprobación automática}
-    Reset(a)
+    Reset(a);
     {$I+}  {Activa la comprobación de la linea 34}
 
     if IOResult <> 0 then {Si no hay un problema en la comprobación en la línea 35, crea el archivo.}

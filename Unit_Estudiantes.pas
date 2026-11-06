@@ -22,6 +22,7 @@ procedure GuardarRegistroEstudiante(var a:TarchivoEstudiante; pos:integer; var r
 procedure BurbujaLegajo(var a:TarchivoEstudiante);
 procedure BusquedaBinariaEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer);
 procedure MostrarDatosEstudiante(var r: TEstudiante);
+procedure bajaEstudiante(var a:TarchivoEstudiante; var r: TEstudiante; var pos: integer; buscado : string);
 
 implementation
 
@@ -29,7 +30,7 @@ procedure AbrirArchivoEstudiantes(var a: TarchivoEstudiante);
 begin
     Assign(a, 'Estudiantes.dat');
     {$I-}   {Desactiva la comprobación automática}
-    Reset(a)
+    Reset(a);
     {$I+}   {Activa la comprobación de la linea 34}
 
     if IOResult <> 0 then {Si no hay un problema en la comprobación en la línea 35, crea el archivo.}
@@ -107,8 +108,6 @@ begin
     estado := True;
 end;
 
-procedure bajaEstudiante(var a:TarchivoEstudiante; )
-
 procedure BurbujaLegajo(var a:TarchivoEstudiante);
 var
     r1, r2: TEstudiante;
@@ -174,8 +173,15 @@ end;
 procedure BuscarEstudiante(var a: TarchivoEstudiante;var r: TEstudiante; var pos: integer; buscado:string);
 begin 
     BurbujaLegajo(a);
-    BusquedaBinariaEstudiante(a,r,pos,legajoabuscar);
+    BusquedaBinariaEstudiante(a,r,pos,buscado);
     MostrarDatosEstudiante(r);
+end;
+
+procedure bajaEstudiante(var a:TarchivoEstudiante; var r: TEstudiante; var pos: integer; buscado : string);
+begin
+    BurbujaLegajo(a);
+    BusquedaBinariaEstudiante(a, r, pos, buscado);
+    r.estado := False;
 end;
 
 end.
